@@ -1,0 +1,460 @@
+// Copyright Stephan T. Lavavej, http://nuwen.net .
+// Distributed under the Boost Software License, Version 1.0.
+// See accompanying file LICENSE_1_0.txt or copy at
+// http://boost.org/LICENSE_1_0.txt .
+
+[2.0.1.2] - 1/1/2010
+jpeg.hh: Distro 4.3 renamed JPEG_BOOL to JPEG_boolean.
+
+[2.0.1.1] - 12/31/2008
+Fixed GCC 4.3.2 warnings in all files.
+time.hh: Added leap second.
+
+[2.0.1.0] - 9/21/2008
+time.hh: Removed Boost.Lambda dependency.
+typedef.hh: Added float and double typedefs.
+
+[2.0.0.1] - 2/26/2007
+huff.hh: Retuned nuwen::puff() given GCC 4.1.2's optimizations.
+memory.hh: Fixed a minor GCC 4.1.2 warning on Windows.
+
+[2.0.0.0] - 1/28/2007
+Rewrote all files. Complete summary of file-level changes:
+
+private_begin.hh: Renamed to external_begin.hh.
+private_end.hh: Renamed to external_end.hh.
+serialize.hh: Renamed to serial.hh.
+serialize_test.cc: Renamed to serial_test.cc.
+sha1.hh: Replaced by sha256.hh.
+sha1_test.cc: Replaced by sha256_test.cc.
+socket_kiddy_test.cc: Removed.
+socket_mommy_test.cc: Removed.
+socket_kiddy_select_test.cc: Renamed to socket_client_test.cc.
+socket_mommy_select_test.cc: Renamed to socket_server_test.cc.
+suffix_tree.hh: Integrated into bwt.hh.
+suffix_tree_test.cc: Integrated into bwt_test.cc.
+tester.hh: Renamed to test.hh.
+test_test.cc: Added.
+gluon.hh: Added.
+gluon_test.cc: Added.
+jpeg.hh: Added.
+jpeg_test.cc: Added.
+random.hh: Added.
+random_test.cc: Added.
+static_assert_private.hh: Added.
+traits.hh: Added.
+traits_test.cc: Added.
+
+Non-exhaustive summary of individual changes:
+
+Removed all exception specifications.
+Significantly improved all tests, which now produce much more concise output.
+All instantiable classes are now confined to separate namespaces.
+All idempotent headers now use #pragma once on MSVC.
+
+algorithm.hh: Provided boost::mem_fn wrappers.
+arith.hh: Fixed a latent data corruption bug, triggered by INCREMENT_VALUE > 1.
+          Improved BWT/MTF-2/ZLE/Arith compression from 1.684 to 1.642 b/B on suall10.txt.
+bwt.hh: Removed premature generalization; suffix trees are now focused on the BWT.
+        GCC 3.4.2: Decreased memory usage from 40 N to 19 N. Increased speed from 398 KB/sec to 723 KB/sec.
+        MSVC 8.0 SP1: Decreased memory usage from 50 N to 19 N. Increased speed from 360 KB/sec to 728 KB/sec.
+bzip2.hh: nuwen::unbzip2() now takes a single argument, allowing it to decompress actual .bz2 files.
+cgi.hh: "URL encoding" is now provided in the nuwen namespace.
+        Renamed nuwen::un_flat to nuwen::cgi::request.
+        Fixed minor bugs in request and cookie parsing.
+cgi_test.cc: Actually tests everything now.
+clock.hh: Renamed nuwen::timeclock to nuwen::chrono::watch.
+          nuwen::snooze() now uses SetWaitableTimer() on Windows, instead of evil timeBeginPeriod().
+          nuwen::snooze() now uses nanosleep() on Unix, instead of evil spinning.
+color.hh: Simplified nuwen::set_fore_color() and nuwen::set_back_color() on Unix.
+compiler.hh: Added NUWEN_PLATFORM_FOOBAR for greater consistency.
+             Added NUWEN_VERSION, which is of the form "2.0.0.0".
+external_begin.hh: Now defines NOMINMAX on Windows for greater cleanliness.
+                   Now defines WIN32_LEAN_AND_MEAN on Windows for faster builds.
+fibonacci.hh: Generalized to handle all unsigned integers.
+              Made decoding significantly more strict.
+file.hh: Moved all functions and classes to namespace nuwen::file.
+         nuwen::file::write_file() now takes an output_mode.
+         Added nuwen::file::remove_file().
+         Files are now read in 64 KB blocks instead of 4 KB for slightly improved performance.
+gluon.hh: Gluons replace the templated operators in vector.hh.
+huff.hh: Decreased the puff automaton constructor's execution time on GCC 3.4.2 from 6.573 ms to 1.208 ms.
+         Significantly simplified the automata and added detailed comments.
+jpeg.hh: nuwen::decompress_jpeg_insecurely() wraps libjpeg. "Insecurely" refers to libjpeg's error handling,
+         which exits upon fatal errors.
+Makefile: Added MSVC=y DEBUG=y mode.
+          Removed "make fast".
+          Improved "make poison".
+memory.hh: Replaced nuwen::peak_memory_usage_in_bytes() with nuwen::vm_bytes(), which is
+           accurately named and useful.
+mtf.hh: Removed MTF and MTF-1.
+random.hh: nuwen::random::twister replaces nuwen::sha1prng.
+serial.hh: Significantly restructured. The thin wrappers nuwen::serialize::serial_t and nuwen::deserialize::deserial_t
+           have been replaced by the properly encapsulated nuwen::ser::serial and nuwen::des::deserial.
+sha256.hh: Replaced SHA-1 with SHA-256.
+           Avoided making a padded copy of the input.
+sha256_test.cc: Added support for running the NIST test vectors.
+socket.hh: Removed the non-select() server.
+           Renamed nuwen::kiddy_socket to nuwen::sock::client_socket.
+           Renamed nuwen::mommy_socket to nuwen::sock::server_socket.
+           Simplified implementation, renamed methods, and encapsulated client IDs as nuwen::sock::client_id.
+string.hh: Improved the algorithm for find-and-replace.
+test.hh: The NUWEN_TEST macro gives an ID to every test and detects failed tests, thrown exceptions, and unexpected exits.
+time.hh: Now handles leap seconds correctly.
+         Improved the time formatting syntax; it is now readable.
+         Now handles DST correctly, instead of performing all logic in UTC.
+         New DST rules added; WTB [Sane Congress] x1 PST.
+traits.hh: Provided simple type traits to support other headers.
+typedef.hh: Systematized to generate many more typedefs. Removed evil typedefs.
+vector.hh: Replaced nuwen::str_from_vuc() and nuwen::vuc_from_str() with nuwen::string_cast<T>().
+           Replaced nuwen::deq_from_vec() and nuwen::vec_from_deq() with nuwen::sequence_cast<T>().
+           Moved nuwen::packed_bits to nuwen::pack::packed_bits.
+zle.hh: Made nuwen::unzle() significantly more strict.
+zlib.hh: Added level and strategy parameters to nuwen::zlib().
+         nuwen::unzlib() now takes a single argument, simplifying its use.
+
+[1.0.28.0] - 4/9/2006
+compiler.hh: Added MSVC 8.0 detection.
+             Removed GCC patchlevel elision.
+Makefile.msvc: Removed. Unified into "make MSVC=y".
+poison.bat: Removed. Unified into "make poison".
+Makefile: Updated for MSVC 8.0.
+          Removed WINVER definition.
+          Removed UPX.
+private_begin.hh: Updated for MSVC 8.0.
+                  Added WINVER definition.
+socket.hh: Added pham::kiddy_nuker to work around an apparent MSVC 8.0 bug.
+Modified all files to fix MSVC 8.0 warnings.
+Removed copyright year from all files.
+
+[1.0.27.2] - 3/12/2006
+Makefile: Updated for w32api-3.3.
+
+[1.0.27.1] - 1/22/2006
+Makefile: Improved OS detection; no longer requires RM = del .
+
+[1.0.27.0] - 5/31/2005
+Makefile: Updated for GCC 3.4.2.
+serialize.hh: Eliminated pham::deserialize_helper<T>::return_t.
+              Removed exception specifications.
+              Fixed argument-dependent lookup problems by serializing to nuwen::serialize::serial_t
+              and deserializing from nuwen::deserialize::deserial_t.
+              Made bool serializable.
+serialize_test.cc: Appropriately modified.
+cgi.hh: Appropriately modified.
+cgi_test.cc: Appropriately modified.
+
+[1.0.26.0] - 9/7/2004
+libnuwen is now distributed under the Boost Software License.
+
+[1.0.25.0] - 7/2/2004
+bwt.hh: Added.
+bwt_test.cc: Added.
+
+[1.0.24.0] - 6/30/2004
+mtf.hh: Fixed a minor MSVC 7.1 warning.
+zle.hh: Added.
+zle_test.cc: Added.
+
+[1.0.23.0] - 6/30/2004
+arith.hh: Tweaked settings slightly.
+mtf.hh: Removed nuwen::ts0() and nuwen::unts0().
+        Reimplemented everything to be nothrow.
+        Speedups: Forward 18.8%, reverse 38.5%. (Tested on random data.)
+mtf_test.cc: Removed corresponding tests.
+
+[1.0.22.2] - 5/24/2004
+suffix_tree.hh: Reduced suffix sort memory consumption from 43 N to 36 N. This incurred a 20.7% speed hit.
+                (MSVC 7.1 consumes 54 N and is 24.7% slower than GCC 3.3.3.)
+
+[1.0.22.1] - 5/20/2004
+file.hh: Replaced uses of std::getc() and std::putc() with std::fread() and std::fwrite().
+
+[1.0.22.0] - 5/19/2004
+arith.hh: Added.
+arith_test.cc: Added.
+
+[1.0.21.0] - 5/18/2004
+private_begin.hh: Added.
+private_end.hh: Added.
+Makefile: Enhanced clean target.
+Makefile.msvc: Enhanced clean target.
+               Moved some functionality to private_begin.hh.
+               Significantly reduced the set of warnings which are turned off everywhere.
+typedef.hh: Added size_type typedefs.
+            Added nuwen::slong_t typedef.
+Modified all files to use private_begin.hh and private_end.hh.
+Modified all files to fix MSVC 7.1 warnings.
+
+[1.0.20.0] - 5/17/2004
+suffix_tree.hh: Fixed a nasty bug in nuwen::suffix_tree's copy constructor and assignment operator.
+suffix_tree_test.cc: Added more tests.
+Makefile.msvc: Added.
+Reintroduced unnecessary namespace qualifications due to a MSVC 7.1 bug.
+_WIN32 is now used to check for the presence of Windows.
+Makefile: Fixed a bug that was preventing daemon_text.exe from compiling.
+socket.hh: Fixed a minor MSVC 7.1 warning.
+cgi.hh: Fixed a problem that was breaking compilation under MSVC 7.1.
+        Fixed a minor MSVC 7.1 warning.
+
+[1.0.19.1] - 5/15/2004
+socket.hh: Fixed a bug that could cause nuwen::mommy_select_socket to spin and consume all of the processor.
+
+[1.0.19.0] - 5/13/2004
+cgi.hh: Made nuwen::un_flat serializable.
+cgi_test.cc: Added corresponding tests.
+
+[1.0.18.1] - 5/9/2004
+suffix_tree.hh: Added pham::timed_lengths_of_sorted_suffixes().
+suffix_tree_test.cc: Appropriately modified.
+                     Modified to use memory.hh.
+Makefile: Appropriately modified.
+
+[1.0.18.0] - 5/9/2004
+memory.hh: Added.
+memory_test.cc: Added.
+Makefile: Appropriately modified.
+
+[1.0.17.2] - 5/8/2004
+clock.hh: Improved the snooze functions on Windows.
+Makefile: Appropriately modified.
+
+[1.0.17.1] - 5/8/2004
+compiler.hh: Added Microsoft Visual C++ detection.
+
+[1.0.17.0] - 5/8/2004
+suffix_tree.hh: Added.
+suffix_tree_test.cc: Added.
+
+[1.0.16.4] - 5/3/2004
+color_private.hh: Added.
+color.hh: Modified to use color_private.hh.
+          Cleaned up source.
+
+[1.0.16.3] - 5/3/2004
+time.hh: Simplified nuwen::was_daylight()'s implementation thanks to a Boost 1.31.0 bugfix.
+         Removed pham::seconds_from_time_duration().
+         Simplified pham::replace_char().
+
+[1.0.16.2] - 5/3/2004
+Removed unnecessary namespace qualification of parameters.
+
+[1.0.16.1] - 5/2/2004
+huff.hh: Removed pham::huff_fixed() and pham::puff_variable().
+huff_test.cc: Appropriately modified.
+
+[1.0.16.0] - 5/2/2004
+file.hh: Fixed two minor MSVC 7.1 warnings.
+typedef.hh: Added iterator typedefs.
+huff.hh: Added automaton based encoding and decoding.
+         Used iterator typedefs.
+huff_test.cc: Added corresponding tests.
+Makefile: Removed -fprefetch-loop-arrays -mcpu=pentium4 .
+
+[1.0.15.1] - 4/19/2004
+huff.hh: Increased speed of nuwen::puff() by 21x.
+
+[1.0.15.0] - 4/19/2004
+huff.hh: Added.
+huff_test.cc: Added.
+
+[1.0.14.0] - 4/13/2004
+zlib.hh: Added.
+zlib_test.cc: Added.
+Makefile: Appropriately modified.
+
+[1.0.13.0] - 4/13/2004
+typedef.hh: Added nuwen::ui_t.
+poison.bat: Fixed and appropriately modified.
+bzip2.hh: Added.
+bzip2_test.cc: Added.
+Makefile: Appropriately modified.
+
+[1.0.12.0] - 4/6/2004
+sha1.hh: Added nuwen::sha1prng.
+sha1_test.cc: Added corresponding tests.
+
+[1.0.11.0] - 4/6/2004
+vector.hh: Added nuwen::hex_from_uc().
+           Added nuwen::uc_from_hex().
+           Added nuwen::hex_from_vuc().
+           Added nuwen::vuc_from_hex().
+vector_test.cc: Added corresponding tests.
+sha1_test.cc: Appropriately modified.
+cgi.hh: Appropriately modified.
+
+[1.0.10.0] - 4/6/2004
+sha1.hh: Added.
+sha1_test.cc: Added.
+
+[1.0.9.0] - 3/16/2004
+cgi.hh: Added nuwen::get_env_var().
+        Added nuwen::get_content().
+
+[1.0.8.1] - 3/16/2004
+cgi.hh: Fixed nuwen::make_cookie().
+
+[1.0.8.0] - 2/19/2004
+cgi.hh: Added nuwen::make_cookie() and nuwen::read_cookie().
+string.hh: Added nuwen::strip_outside_whitespace().
+string_test.cc: Added corresponding tests.
+Makefile: Appropriately modified.
+
+[1.0.7.1] - 2/19/2004
+cgi.hh: Added pham::bork().
+cgi_test.cc: Added corresponding tests.
+
+[1.0.7.0] - 2/12/2004
+socket_private.hh: Added pham::better_fd_set::empty().
+socket.hh: Made pham::mss_state::next_request() use pham::better_fd_set::empty().
+           pham::mss_state is now a class.
+           Changed pham::cxn_state::dead() so that connections with full unfinished
+           requests are not considered dead.
+           Added pham::mss_state::flush().
+           Added nuwen::mommy_select_socket::flush().
+socket_mommy_select_test.cc: Appropriately modified.
+socket_kiddy_select_test.cc: Appropriately modified.
+
+[1.0.6.0] - 2/12/2004
+string.hh: Added nuwen::find_and_replace().
+string_test.cc: Added corresponding tests.
+
+[1.0.5.4] - 2/12/2004
+string.hh: Renamed nuwen::find_and_replace() to nuwen::find_and_replace_copy().
+string_test.cc: Appropriately modified.
+
+[1.0.5.3] - 2/11/2004
+poison.bat: Minor fix.
+socket_private.hh: Fixed GNU/Linux compatibility problems.
+
+[1.0.5.2] - 2/11/2004
+socket.hh: Made pham::proto_socket::proto_socket() disable Nagle.
+
+[1.0.5.1] - 2/11/2004
+socket.hh: Use nuwen::nuke_if().
+socket_private.hh: Use nuwen::nuke().
+
+[1.0.5.0] - 2/5/2004
+algorithm.hh: Added nuwen::universal[_stable]_sort[_copy]().
+              Added nuwen::nuke[_copy][_if]().
+              Added nuwen::nuke_dupes[_stable][_copy]().
+algorithm_test.cc: Added corresponding tests.
+
+[1.0.4.7] - 2/5/2004
+socket.hh: Removed nuwen::mommy_select_socket::nuke().
+           Moved code into pham::mss_state::next_request().
+           Moved code into pham::mss_state::scribe_continue().
+           Moved code into pham::mss_state::finish().
+
+[1.0.4.6] - 2/2/2004
+socket.hh: Removed pham::cxn_state::mark_of_death.
+           Coalesced loops in nuwen::mommy_select_socket::next_request_vuc().
+
+[1.0.4.5] - 2/2/2004
+socket.hh: Removed ids_to_nuke in nuwen::mommy_select_socket::next_request_vuc().
+
+[1.0.4.4] - 2/1/2004
+socket.hh: Moved code into pham::cxn_state::send_data_if_ready().
+
+[1.0.4.3] - 2/1/2004
+socket.hh: Removed pham::ptr_to_dead_cxn_state().
+
+[1.0.4.2] - 2/1/2004
+socket.hh: Moved code into pham::cxn_state::receive_data_if_unfinished_and_ready().
+           Fixed a problem where incoming.reserve(length) was being called before
+           checking whether length > receive_limit.
+
+[1.0.4.1] - 2/1/2004
+socket.hh: Added reserve() calls when dealing with pham::cxn_state::incoming.
+
+[1.0.4.0] - 1/29/2004
+socket_private.hh: Added.
+socket.hh: Modified to use socket_private.hh.
+           Added nuwen::mommy_select_socket.
+           Added pham::cxn_state.
+           Added pham::ptr_to_dead_cxn_state().
+           Added pham::mss_state.
+socket_mommy_select_test.cc: Added.
+socket_kiddy_select_test.cc: Added.
+Makefile: Appropriately modified.
+
+[1.0.3.10] - 1/26/2004
+socket.hh: Added pham::make_mommy_socket().
+           Modified nuwen::mommy_socket::mommy_socket() accordingly.
+
+[1.0.3.9] - 1/26/2004
+socket.hh: Changed what nuwen::kiddy_socket's private ctor takes.
+           Modified nuwen::mommy_socket::next_kiddy() accordingly.
+
+[1.0.3.8] - 1/26/2004
+socket.hh: Made nuwen::mommy_socket::mommy_socket() use getaddrinfo().
+           Removed pham::make_sockaddr_in().
+           Removed pham::BIND_ADDRESS.
+           Added pham::address_information.
+           Modified nuwen::kiddy_socket::kiddy_socket() accordingly.
+           Modified nuwen::mommy_socket::mommy_socket() accordingly.
+
+[1.0.3.7] - 1/19/2004
+socket.hh: Added pham::primitive_write().
+           Modified nuwen::kiddy_socket::scribe() accordingly.
+
+[1.0.3.6] - 1/19/2004
+socket.hh: Made pham::proto_socket::~proto_socket() slam sockets closed and ignore errors.
+           Removed pham::close_it_down().
+
+[1.0.3.5] - 1/19/2004
+file.hh: Made pham::proto_file derive from boost::noncopyable.
+socket.hh: Made pham::proto_socket derive from boost::noncopyable.
+
+[1.0.3.4] - 1/17/2004
+socket.hh: Replaced gethostbyname() with getaddrinfo().
+Makefile: Link against Winsock 2, not Winsock.
+
+[1.0.3.3] - 1/13/2004
+serialize.hh: Added pham::deserialize_helper<const T>::fxn().
+              Removed pham::remove_component_const.
+
+[1.0.3.2] - 1/13/2004
+tester.hh: Added. (No tester_test.cc was added.)
+algorithm_test.cc:    Modified to use tester.hh.
+cgi_test.cc:          Modified to use tester.hh.
+fibonacci_test.cc:    Modified to use tester.hh.
+mtf_test.cc:          Modified to use tester.hh.
+serialize_test.cc:    Modified to use tester.hh.
+socket_kiddy_test.cc: Modified to use tester.hh.
+socket_mommy_test.cc: Modified to use tester.hh.
+string_test.cc:       Modified to use tester.hh.
+time_test.cc:         Modified to use tester.hh.
+typedef_test.cc:      Modified to use tester.hh.
+vector_test.cc:       Modified to use tester.hh.
+
+[1.0.3.1] - 1/12/2004
+vector_test.cc: Changed unsigned char to uc_t.
+
+[1.0.3.0] - 1/12/2004
+typedef.hh: Added deque typedefs.
+vector.hh: Added sign conversion functions.
+           Modified sll_from_vuc() and vuc_from_sll().
+           Added three us_t functions.
+           Added five deque operators.
+           Added two deque/vector converters.
+vector_test.cc: Added corresponding tests.
+serialize.hh: Added.
+serialize_test.cc: Added.
+
+[1.0.2.1] - 1/6/2004
+Exceptions are now caught by reference.
+
+[1.0.2.0] - 1/6/2004
+time.hh: Added support for displaying years in Roman numerals.
+time_test.cc: Added two corresponding tests.
+
+[1.0.1.0] - 10/22/2003
+daemon.hh: Added.
+daemon_test.cc: Added.
+Makefile: Appropriately modified.
+
+[1.0.0.0] - 10/20/2003
+compiler.hh: Added four-part version numbers.
+             Appropriately modified NUWEN_COMPILER.
+changelog.txt: Added.
